@@ -1,5 +1,5 @@
 venv
-
+secrets.yaml
 
 
 # Created by https://www.gitignore.io/api/linux,flask,django,python,windows,visualstudiocode
