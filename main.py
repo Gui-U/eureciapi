@@ -50,7 +50,7 @@ def connect_to_eurecia(eurecia_host :str, login :str, password :str) -> webdrive
     return driver
 
 
-def download_last_fichedepaie(driver: webdriver, eurecia_host:str):
+def download_last_payslip(driver: webdriver, eurecia_host:str):
     print("Download last fichedepaie")
     
 
@@ -60,15 +60,17 @@ def download_last_fichedepaie(driver: webdriver, eurecia_host:str):
 #    element.click()
 #
 
-    driver.get("https://" + eurecia_host + "/eurecia/hrpack/directoryUser/Browse.do")
+    driver.get("https://" + eurecia_host + "/eurecia/payslip/Open.do")
+    time.sleep(10)
+    html_source = driver.page_source
 
     
 
 
-    return driver
+    return driver,html_source
 
 if __name__ == "__main__":
     
     config = config_reader("secrets.yaml")
     driver =        connect_to_eurecia(config['eurecia_host'],config['login'],config['password'])
-    driver =download_last_fichedepaie(driver, config['eurecia_host'])
+    driver,html_source =download_last_payslip(driver, config['eurecia_host'])
