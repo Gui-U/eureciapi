@@ -88,9 +88,29 @@ def download_last_payslip(session: requests.sessions.Session, eurecia_host: str,
         print("OK")
 
 
+def download_calendar(session: requests.sessions.Session, eurecia_host: str, calendar_name: str):
+    print("Download calendar using API")
+    eurecia_host = config["eurecia_host"]
+
+    baseurl = f"https://{eurecia_host}/eurecia/planningVacation/planning.do?print=all"
+
+    response = session.get(baseurl)
+    if response.status_code == 200:
+        calendar_raw = response.text
+    else:
+        print(response.content)
+        raise ValueError(response.status_code)
+
+    if response.status_code == 200:
+        with open(f"{calendar_name}.txt", "w") as f:
+            f.write(calendar_raw)
+        print("OK")
+
+
 if __name__ == "__main__":
 
     config = config_reader("secrets.yaml")
     driver = connect_to_eurecia(config["eurecia_host"], config["login"], config["password"])
     session = driver_to_requests(driver)
     download_last_payslip(session, config["eurecia_host"], config["payslip"])
+    download_calendar(session, config["eurecia_host"], config["calendar"])

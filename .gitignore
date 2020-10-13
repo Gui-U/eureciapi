@@ -2,6 +2,7 @@ venv
 secrets.yaml
 Fiche_de_paie_*
 payslip*
+calen*
 
 # Created by https://www.gitignore.io/api/linux,flask,django,python,windows,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=linux,flask,django,python,windows,visualstudiocode
