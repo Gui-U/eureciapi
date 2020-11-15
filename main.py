@@ -6,6 +6,8 @@ Created on Mon Jan 27 21:42:32 2019
 @author: Alecto
 """
 
+import re
+
 import requests
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
@@ -69,7 +71,7 @@ def download_last_payslip(session: requests.sessions.Session, eurecia_host: str,
     baseurl = f"https://{eurecia_host}/eurecia/api/v1/payslip"
 
     response = session.get(baseurl)
-    if response.status_code == 200:
+    if response.ok:
         payslip_list = response.json()
     else:
         print(response.content)
@@ -90,21 +92,22 @@ def download_last_payslip(session: requests.sessions.Session, eurecia_host: str,
 
 def download_calendar(session: requests.sessions.Session, eurecia_host: str, calendar_name: str):
     print("Download calendar using API")
-    eurecia_host = config["eurecia_host"]
 
     baseurl = f"https://{eurecia_host}/eurecia/planningVacation/planning.do?print=all"
 
     response = session.get(baseurl)
-    if response.status_code == 200:
+    if response.ok:
         calendar_raw = response.text
     else:
         print(response.content)
         raise ValueError(response.status_code)
 
-    if response.status_code == 200:
-        with open(f"{calendar_name}.txt", "w") as f:
+    if response.ok:
+        with open(f"{calendar_name}.html", "w") as f:
             f.write(calendar_raw)
         print("OK")
+    title_regex = r"title=\"([\w\s,'\/()-\.]+)\s([0-9\/-]+)\s\(([\w\s,'\/()-\.]+)\)\s([\w\s,'\/()-\.]+)\s\""
+    calendar_extracted = re.findall(title_regex, calendar_raw, re.MULTILINE)
 
 
 if __name__ == "__main__":
@@ -114,3 +117,5 @@ if __name__ == "__main__":
     session = driver_to_requests(driver)
     download_last_payslip(session, config["eurecia_host"], config["payslip"])
     download_calendar(session, config["eurecia_host"], config["calendar"])
+    eurecia_host = config["eurecia_host"]
+    calendar_name =  config["calendar"]
